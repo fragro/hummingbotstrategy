@@ -94,7 +94,12 @@ cdef class TradingIndicator():
     cdef buy(self, float price):
         self._buys.append(price)
         self._avg_buy_price = sum(self._buys) / len(self._buys)
-    
+
+    # add purchase to records and update the avg
+    cdef sell(self):
+        self._buys.pop(0)
+        self._avg_buy_price = sum(self._buys) / len(self._buys)
+
     # Moving Average of list t with window N
     def calculate_running_mean(self, t, n):
         ret = np.cumsum(t, dtype=float)

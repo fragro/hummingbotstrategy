@@ -384,7 +384,6 @@ cdef class RsiTradeStrategy(StrategyBase):
                     self._orders_placed = True
             else:
                 quantized_price = market.c_quantize_order_price(market_info.trading_pair, self.order_price(market_info))
-                self._ti.buy(quantized_price)
                 if self.c_validate_order(quantized_price):
                     if self.is_buy:
                         order_id = self.c_buy_with_specific_market(market_info,
@@ -392,6 +391,7 @@ cdef class RsiTradeStrategy(StrategyBase):
                                                                    order_type=OrderType.LIMIT,
                                                                    price=quantized_price)
                         self.logger().info("Limit buy order has been placed")
+                        self._ti.buy(quantized_price)
                         self._orders_placed = True
 
                     else:
@@ -400,6 +400,7 @@ cdef class RsiTradeStrategy(StrategyBase):
                                                                     order_type=OrderType.LIMIT,
                                                                     price=quantized_price)
                         self.logger().info("Limit sell order has been placed")
+                        self._ti.sell()
                         self._orders_placed = True
 
                     self._time_to_cancel[order_id] = self._current_timestamp + self._cancel_order_wait_time

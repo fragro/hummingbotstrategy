@@ -899,6 +899,7 @@ struct __pyx_vtabstruct_10hummingbot_8strategy_9rsi_trade_17trading_indicator_Tr
   PyObject *(*c_store_tick_data)(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *, PyObject *);
   PyObject *(*c_record_sign_flip_data)(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *);
   PyObject *(*buy)(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *, float);
+  PyObject *(*sell)(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *);
 };
 static struct __pyx_vtabstruct_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *__pyx_vtabptr_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator;
 

@@ -882,6 +882,7 @@ struct __pyx_vtabstruct_10hummingbot_8strategy_9rsi_trade_17trading_indicator_Tr
   PyObject *(*c_store_tick_data)(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *, PyObject *);
   PyObject *(*c_record_sign_flip_data)(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *);
   PyObject *(*buy)(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *, float);
+  PyObject *(*sell)(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *);
 };
 static struct __pyx_vtabstruct_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *__pyx_vtabptr_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator;
 
@@ -1109,6 +1110,35 @@ static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
 
 /* None.proto */
 static CYTHON_INLINE double __Pyx_mod_double(double, double);
+
+/* PyObjectGetMethod.proto */
+static int __Pyx_PyObject_GetMethod(PyObject *obj, PyObject *name, PyObject **method);
+
+/* PyObjectCallMethod1.proto */
+static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg);
+
+/* pop_index.proto */
+static PyObject* __Pyx__PyObject_PopNewIndex(PyObject* L, PyObject* py_ix);
+static PyObject* __Pyx__PyObject_PopIndex(PyObject* L, PyObject* py_ix);
+#if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
+static PyObject* __Pyx__PyList_PopIndex(PyObject* L, PyObject* py_ix, Py_ssize_t ix);
+#define __Pyx_PyObject_PopIndex(L, py_ix, ix, is_signed, type, to_py_func) (\
+    (likely(PyList_CheckExact(L) && __Pyx_fits_Py_ssize_t(ix, type, is_signed))) ?\
+        __Pyx__PyList_PopIndex(L, py_ix, ix) : (\
+        (unlikely((py_ix) == Py_None)) ? __Pyx__PyObject_PopNewIndex(L, to_py_func(ix)) :\
+            __Pyx__PyObject_PopIndex(L, py_ix)))
+#define __Pyx_PyList_PopIndex(L, py_ix, ix, is_signed, type, to_py_func) (\
+    __Pyx_fits_Py_ssize_t(ix, type, is_signed) ?\
+        __Pyx__PyList_PopIndex(L, py_ix, ix) : (\
+        (unlikely((py_ix) == Py_None)) ? __Pyx__PyObject_PopNewIndex(L, to_py_func(ix)) :\
+            __Pyx__PyObject_PopIndex(L, py_ix)))
+#else
+#define __Pyx_PyList_PopIndex(L, py_ix, ix, is_signed, type, to_py_func)\
+    __Pyx_PyObject_PopIndex(L, py_ix, ix, is_signed, type, to_py_func)
+#define __Pyx_PyObject_PopIndex(L, py_ix, ix, is_signed, type, to_py_func) (\
+    (unlikely((py_ix) == Py_None)) ? __Pyx__PyObject_PopNewIndex(L, to_py_func(ix)) :\
+        __Pyx__PyObject_PopIndex(L, py_ix))
+#endif
 
 /* SliceObject.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyObject_GetSlice(
@@ -1360,6 +1390,7 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_16TradingIndicator_c_store_tick_data(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *__pyx_v_self, PyObject *__pyx_v_market_info); /* proto*/
 static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_16TradingIndicator_buy(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *__pyx_v_self, float __pyx_v_price); /* proto*/
+static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_16TradingIndicator_sell(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *__pyx_v_self); /* proto*/
 static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_16TradingIndicator_c_calculate_ma_p(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *__pyx_v_self); /* proto*/
 static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_16TradingIndicator_c_record_sign_flip_data(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *__pyx_v_self); /* proto*/
 
@@ -1378,6 +1409,7 @@ static const char __pyx_k_n[] = "n";
 static const char __pyx_k_t[] = "t";
 static const char __pyx_k_np[] = "np";
 static const char __pyx_k_new[] = "__new__";
+static const char __pyx_k_pop[] = "pop";
 static const char __pyx_k_sum[] = "sum";
 static const char __pyx_k_dict[] = "__dict__";
 static const char __pyx_k_main[] = "__main__";
@@ -1455,6 +1487,7 @@ static PyObject *__pyx_n_s_numpy;
 static PyObject *__pyx_n_s_opts;
 static PyObject *__pyx_n_u_period_interval;
 static PyObject *__pyx_n_s_pickle;
+static PyObject *__pyx_n_s_pop;
 static PyObject *__pyx_n_s_pyx_PickleError;
 static PyObject *__pyx_n_s_pyx_checksum;
 static PyObject *__pyx_n_s_pyx_result;
@@ -2758,7 +2791,7 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
  *         self._buys.append(price)
  *         self._avg_buy_price = sum(self._buys) / len(self._buys)             # <<<<<<<<<<<<<<
  * 
- *     # Moving Average of list t with window N
+ *     # add purchase to records and update the avg
  */
   __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_sum, __pyx_v_self->_buys); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -2805,6 +2838,89 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
 
 /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":99
  * 
+ *     # add purchase to records and update the avg
+ *     cdef sell(self):             # <<<<<<<<<<<<<<
+ *         self._buys.pop(0)
+ *         self._avg_buy_price = sum(self._buys) / len(self._buys)
+ */
+
+static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_16TradingIndicator_sell(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  Py_ssize_t __pyx_t_3;
+  PyObject *__pyx_t_4 = NULL;
+  double __pyx_t_5;
+  __Pyx_RefNannySetupContext("sell", 0);
+
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":100
+ *     # add purchase to records and update the avg
+ *     cdef sell(self):
+ *         self._buys.pop(0)             # <<<<<<<<<<<<<<
+ *         self._avg_buy_price = sum(self._buys) / len(self._buys)
+ * 
+ */
+  if (unlikely(__pyx_v_self->_buys == Py_None)) {
+    PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "pop");
+    __PYX_ERR(0, 100, __pyx_L1_error)
+  }
+  __pyx_t_1 = __Pyx_PyList_PopIndex(__pyx_v_self->_buys, __pyx_int_0, 0, 1, Py_ssize_t, PyInt_FromSsize_t); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":101
+ *     cdef sell(self):
+ *         self._buys.pop(0)
+ *         self._avg_buy_price = sum(self._buys) / len(self._buys)             # <<<<<<<<<<<<<<
+ * 
+ *     # Moving Average of list t with window N
+ */
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_sum, __pyx_v_self->_buys); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __pyx_v_self->_buys;
+  __Pyx_INCREF(__pyx_t_2);
+  if (unlikely(__pyx_t_2 == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 101, __pyx_L1_error)
+  }
+  __pyx_t_3 = PyList_GET_SIZE(__pyx_t_2); if (unlikely(__pyx_t_3 == ((Py_ssize_t)-1))) __PYX_ERR(0, 101, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = PyInt_FromSsize_t(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_4 = __Pyx_PyNumber_Divide(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_4); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 101, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_v_self->_avg_buy_price = __pyx_t_5;
+
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":99
+ * 
+ *     # add purchase to records and update the avg
+ *     cdef sell(self):             # <<<<<<<<<<<<<<
+ *         self._buys.pop(0)
+ *         self._avg_buy_price = sum(self._buys) / len(self._buys)
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("hummingbot.strategy.rsi_trade.trading_indicator.TradingIndicator.sell", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":104
+ * 
  *     # Moving Average of list t with window N
  *     def calculate_running_mean(self, t, n):             # <<<<<<<<<<<<<<
  *         ret = np.cumsum(t, dtype=float)
@@ -2842,11 +2958,11 @@ static PyObject *__pyx_pw_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_n)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calculate_running_mean", 1, 2, 2, 1); __PYX_ERR(0, 99, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("calculate_running_mean", 1, 2, 2, 1); __PYX_ERR(0, 104, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calculate_running_mean") < 0)) __PYX_ERR(0, 99, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calculate_running_mean") < 0)) __PYX_ERR(0, 104, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2859,7 +2975,7 @@ static PyObject *__pyx_pw_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("calculate_running_mean", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 99, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("calculate_running_mean", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 104, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("hummingbot.strategy.rsi_trade.trading_indicator.TradingIndicator.calculate_running_mean", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2882,27 +2998,27 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("calculate_running_mean", 0);
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":100
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":105
  *     # Moving Average of list t with window N
  *     def calculate_running_mean(self, t, n):
  *         ret = np.cumsum(t, dtype=float)             # <<<<<<<<<<<<<<
  *         ret[n:] = ret[n:] - ret[:-n]
  *         self._running_mean = list(ret[n - 1:] / n)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_cumsum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_cumsum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_t);
   __Pyx_GIVEREF(__pyx_v_t);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_t);
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, ((PyObject *)(&PyFloat_Type))) < 0) __PYX_ERR(0, 100, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 100, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, ((PyObject *)(&PyFloat_Type))) < 0) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -2910,43 +3026,43 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   __pyx_v_ret = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":101
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":106
  *     def calculate_running_mean(self, t, n):
  *         ret = np.cumsum(t, dtype=float)
  *         ret[n:] = ret[n:] - ret[:-n]             # <<<<<<<<<<<<<<
  *         self._running_mean = list(ret[n - 1:] / n)
  *         # s = pd.Series(t).to_numpy()
  */
-  __pyx_t_4 = __Pyx_PyObject_GetSlice(__pyx_v_ret, 0, 0, &__pyx_v_n, NULL, NULL, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetSlice(__pyx_v_ret, 0, 0, &__pyx_v_n, NULL, NULL, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 106, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = PyNumber_Negative(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Negative(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 106, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyObject_GetSlice(__pyx_v_ret, 0, 0, NULL, &__pyx_t_3, NULL, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetSlice(__pyx_v_ret, 0, 0, NULL, &__pyx_t_3, NULL, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Subtract(__pyx_t_4, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Subtract(__pyx_t_4, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 106, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__Pyx_PyObject_SetSlice(__pyx_v_ret, __pyx_t_3, 0, 0, &__pyx_v_n, NULL, NULL, 0, 0, 1) < 0) __PYX_ERR(0, 101, __pyx_L1_error)
+  if (__Pyx_PyObject_SetSlice(__pyx_v_ret, __pyx_t_3, 0, 0, &__pyx_v_n, NULL, NULL, 0, 0, 1) < 0) __PYX_ERR(0, 106, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":102
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":107
  *         ret = np.cumsum(t, dtype=float)
  *         ret[n:] = ret[n:] - ret[:-n]
  *         self._running_mean = list(ret[n - 1:] / n)             # <<<<<<<<<<<<<<
  *         # s = pd.Series(t).to_numpy()
  *         # s.rolling(N).mean()
  */
-  __pyx_t_3 = __Pyx_PyInt_SubtractObjC(__pyx_v_n, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_SubtractObjC(__pyx_v_n, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyObject_GetSlice(__pyx_v_ret, 0, 0, &__pyx_t_3, NULL, NULL, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetSlice(__pyx_v_ret, 0, 0, &__pyx_t_3, NULL, NULL, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyNumber_Divide(__pyx_t_1, __pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyNumber_Divide(__pyx_t_1, __pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PySequence_List(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_t_1 = PySequence_List(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_GIVEREF(__pyx_t_1);
@@ -2955,7 +3071,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   __pyx_v_self->_running_mean = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":99
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":104
  * 
  *     # Moving Average of list t with window N
  *     def calculate_running_mean(self, t, n):             # <<<<<<<<<<<<<<
@@ -2980,7 +3096,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   return __pyx_r;
 }
 
-/* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":106
+/* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":111
  *         # s.rolling(N).mean()
  * 
  *     cdef c_calculate_ma_p(self):             # <<<<<<<<<<<<<<
@@ -3000,7 +3116,7 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("c_calculate_ma_p", 0);
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":107
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":112
  * 
  *     cdef c_calculate_ma_p(self):
  *         if len(self._running_mean) > 0:             # <<<<<<<<<<<<<<
@@ -3011,14 +3127,14 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 107, __pyx_L1_error)
+    __PYX_ERR(0, 112, __pyx_L1_error)
   }
-  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = ((__pyx_t_2 > 0) != 0);
   if (__pyx_t_3) {
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":108
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":113
  *     cdef c_calculate_ma_p(self):
  *         if len(self._running_mean) > 0:
  *             self._last_ma_p = self.ma_p             # <<<<<<<<<<<<<<
@@ -3028,7 +3144,7 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
     __pyx_t_4 = __pyx_v_self->ma_p;
     __pyx_v_self->_last_ma_p = __pyx_t_4;
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":109
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":114
  *         if len(self._running_mean) > 0:
  *             self._last_ma_p = self.ma_p
  *             self.ma_p = self._running_mean[len(self._running_mean)-1] - self._mid_price             # <<<<<<<<<<<<<<
@@ -3037,30 +3153,30 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
  */
     if (unlikely(__pyx_v_self->_running_mean == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 109, __pyx_L1_error)
+      __PYX_ERR(0, 114, __pyx_L1_error)
     }
     __pyx_t_1 = __pyx_v_self->_running_mean;
     __Pyx_INCREF(__pyx_t_1);
     if (unlikely(__pyx_t_1 == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-      __PYX_ERR(0, 109, __pyx_L1_error)
+      __PYX_ERR(0, 114, __pyx_L1_error)
     }
-    __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 109, __pyx_L1_error)
+    __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 114, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_5 = (__pyx_t_2 - 1);
-    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->_running_mean, __pyx_t_5, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->_running_mean, __pyx_t_5, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = PyFloat_FromDouble(__pyx_v_self->_mid_price); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 109, __pyx_L1_error)
+    __pyx_t_6 = PyFloat_FromDouble(__pyx_v_self->_mid_price); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 114, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = PyNumber_Subtract(__pyx_t_1, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 109, __pyx_L1_error)
+    __pyx_t_7 = PyNumber_Subtract(__pyx_t_1, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 114, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_t_7); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 109, __pyx_L1_error)
+    __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_t_7); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 114, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_v_self->ma_p = __pyx_t_4;
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":107
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":112
  * 
  *     cdef c_calculate_ma_p(self):
  *         if len(self._running_mean) > 0:             # <<<<<<<<<<<<<<
@@ -3069,7 +3185,7 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
  */
   }
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":106
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":111
  *         # s.rolling(N).mean()
  * 
  *     cdef c_calculate_ma_p(self):             # <<<<<<<<<<<<<<
@@ -3092,7 +3208,7 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
   return __pyx_r;
 }
 
-/* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":112
+/* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":117
  * 
  *     # When the MA-P sign flips from negative to postive or vice versa set flip_buy and reset MA-P trend, else increment trend
  *     cdef c_record_sign_flip_data(self):             # <<<<<<<<<<<<<<
@@ -3107,7 +3223,7 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
   int __pyx_t_2;
   __Pyx_RefNannySetupContext("c_record_sign_flip_data", 0);
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":113
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":118
  *     # When the MA-P sign flips from negative to postive or vice versa set flip_buy and reset MA-P trend, else increment trend
  *     cdef c_record_sign_flip_data(self):
  *         if self._last_ma_p < 0.0 and self.ma_p > 0.0: # flip from positive to negative, sell the peak             # <<<<<<<<<<<<<<
@@ -3125,7 +3241,7 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":114
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":119
  *     cdef c_record_sign_flip_data(self):
  *         if self._last_ma_p < 0.0 and self.ma_p > 0.0: # flip from positive to negative, sell the peak
  *             self.buy_dip = 0             # <<<<<<<<<<<<<<
@@ -3134,7 +3250,7 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
  */
     __pyx_v_self->buy_dip = 0;
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":115
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":120
  *         if self._last_ma_p < 0.0 and self.ma_p > 0.0: # flip from positive to negative, sell the peak
  *             self.buy_dip = 0
  *             self.ma_p_trend = 0             # <<<<<<<<<<<<<<
@@ -3143,7 +3259,7 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
  */
     __pyx_v_self->ma_p_trend = 0;
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":113
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":118
  *     # When the MA-P sign flips from negative to postive or vice versa set flip_buy and reset MA-P trend, else increment trend
  *     cdef c_record_sign_flip_data(self):
  *         if self._last_ma_p < 0.0 and self.ma_p > 0.0: # flip from positive to negative, sell the peak             # <<<<<<<<<<<<<<
@@ -3153,7 +3269,7 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
     goto __pyx_L3;
   }
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":116
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":121
  *             self.buy_dip = 0
  *             self.ma_p_trend = 0
  *         elif self._last_ma_p > 0.0 and self.ma_p < 0.0: # flip from negative to positive, buy the dip             # <<<<<<<<<<<<<<
@@ -3171,7 +3287,7 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
   __pyx_L6_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":117
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":122
  *             self.ma_p_trend = 0
  *         elif self._last_ma_p > 0.0 and self.ma_p < 0.0: # flip from negative to positive, buy the dip
  *             self.buy_dip = 1             # <<<<<<<<<<<<<<
@@ -3180,7 +3296,7 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
  */
     __pyx_v_self->buy_dip = 1;
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":118
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":123
  *         elif self._last_ma_p > 0.0 and self.ma_p < 0.0: # flip from negative to positive, buy the dip
  *             self.buy_dip = 1
  *             self.ma_p_trend = 0             # <<<<<<<<<<<<<<
@@ -3189,7 +3305,7 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
  */
     __pyx_v_self->ma_p_trend = 0;
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":116
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":121
  *             self.buy_dip = 0
  *             self.ma_p_trend = 0
  *         elif self._last_ma_p > 0.0 and self.ma_p < 0.0: # flip from negative to positive, buy the dip             # <<<<<<<<<<<<<<
@@ -3199,7 +3315,7 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
     goto __pyx_L3;
   }
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":120
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":125
  *             self.ma_p_trend = 0
  *         else:
  *             self.ma_p_trend += 1             # <<<<<<<<<<<<<<
@@ -3211,7 +3327,7 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
   }
   __pyx_L3:;
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":112
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":117
  * 
  *     # When the MA-P sign flips from negative to postive or vice versa set flip_buy and reset MA-P trend, else increment trend
  *     cdef c_record_sign_flip_data(self):             # <<<<<<<<<<<<<<
@@ -3226,7 +3342,7 @@ static PyObject *__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_1
   return __pyx_r;
 }
 
-/* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":125
+/* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":130
  *     # measures the magnitude of recent price changes to evaluate overbought or
  *     # oversold conditions in the price of a stock or other asset.
  *     def calculate_rsi_s1(self):             # <<<<<<<<<<<<<<
@@ -3271,7 +3387,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   PyObject *__pyx_t_9 = NULL;
   __Pyx_RefNannySetupContext("calculate_rsi_s1", 0);
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":126
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":131
  *     # oversold conditions in the price of a stock or other asset.
  *     def calculate_rsi_s1(self):
  *         rs = 1             # <<<<<<<<<<<<<<
@@ -3280,7 +3396,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
  */
   __pyx_v_rs = 1;
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":127
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":132
  *     def calculate_rsi_s1(self):
  *         rs = 1
  *         idx = 0             # <<<<<<<<<<<<<<
@@ -3290,7 +3406,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_idx = __pyx_int_0;
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":128
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":133
  *         rs = 1
  *         idx = 0
  *         p1 = 0             # <<<<<<<<<<<<<<
@@ -3300,7 +3416,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_p1 = __pyx_int_0;
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":129
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":134
  *         idx = 0
  *         p1 = 0
  *         p1_t = 0             # <<<<<<<<<<<<<<
@@ -3310,31 +3426,31 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_p1_t = __pyx_int_0;
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":130
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":135
  *         p1 = 0
  *         p1_t = 0
  *         gains = []             # <<<<<<<<<<<<<<
  *         losses = []
  *         cdef double idx1 = len(self._periods) - (self._rsi_periods +1)
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 130, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_gains = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":131
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":136
  *         p1_t = 0
  *         gains = []
  *         losses = []             # <<<<<<<<<<<<<<
  *         cdef double idx1 = len(self._periods) - (self._rsi_periods +1)
  *         cdef double idx2 = len(self._periods) - 1
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_losses = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":132
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":137
  *         gains = []
  *         losses = []
  *         cdef double idx1 = len(self._periods) - (self._rsi_periods +1)             # <<<<<<<<<<<<<<
@@ -3345,13 +3461,13 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 132, __pyx_L1_error)
+    __PYX_ERR(0, 137, __pyx_L1_error)
   }
-  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 132, __pyx_L1_error)
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_idx1 = (__pyx_t_2 - (__pyx_v_self->_rsi_periods + 1.0));
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":133
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":138
  *         losses = []
  *         cdef double idx1 = len(self._periods) - (self._rsi_periods +1)
  *         cdef double idx2 = len(self._periods) - 1             # <<<<<<<<<<<<<<
@@ -3362,13 +3478,13 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 133, __pyx_L1_error)
+    __PYX_ERR(0, 138, __pyx_L1_error)
   }
-  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 133, __pyx_L1_error)
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_idx2 = (__pyx_t_2 - 1);
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":134
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":139
  *         cdef double idx1 = len(self._periods) - (self._rsi_periods +1)
  *         cdef double idx2 = len(self._periods) - 1
  *         for price in self._periods[<Py_ssize_t>idx1:<Py_ssize_t>idx2]:             # <<<<<<<<<<<<<<
@@ -3377,37 +3493,37 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
  */
   if (unlikely(__pyx_v_self->_periods == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 134, __pyx_L1_error)
+    __PYX_ERR(0, 139, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyList_GetSlice(__pyx_v_self->_periods, ((Py_ssize_t)__pyx_v_idx1), ((Py_ssize_t)__pyx_v_idx2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyList_GetSlice(__pyx_v_self->_periods, ((Py_ssize_t)__pyx_v_idx1), ((Py_ssize_t)__pyx_v_idx2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_3 = __pyx_t_1; __Pyx_INCREF(__pyx_t_3); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
     if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_3)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_1 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_2); __Pyx_INCREF(__pyx_t_1); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 134, __pyx_L1_error)
+    __pyx_t_1 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_2); __Pyx_INCREF(__pyx_t_1); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 139, __pyx_L1_error)
     #else
-    __pyx_t_1 = PySequence_ITEM(__pyx_t_3, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 134, __pyx_L1_error)
+    __pyx_t_1 = PySequence_ITEM(__pyx_t_3, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 139, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     #endif
     __Pyx_XDECREF_SET(__pyx_v_price, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":135
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":140
  *         cdef double idx2 = len(self._periods) - 1
  *         for price in self._periods[<Py_ssize_t>idx1:<Py_ssize_t>idx2]:
  *             if idx == 0:             # <<<<<<<<<<<<<<
  *                 p1 = price
  *                 p1_t = price
  */
-    __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_idx, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_idx, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 140, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 135, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 140, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (__pyx_t_4) {
 
-      /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":136
+      /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":141
  *         for price in self._periods[<Py_ssize_t>idx1:<Py_ssize_t>idx2]:
  *             if idx == 0:
  *                 p1 = price             # <<<<<<<<<<<<<<
@@ -3417,7 +3533,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
       __Pyx_INCREF(__pyx_v_price);
       __Pyx_DECREF_SET(__pyx_v_p1, __pyx_v_price);
 
-      /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":137
+      /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":142
  *             if idx == 0:
  *                 p1 = price
  *                 p1_t = price             # <<<<<<<<<<<<<<
@@ -3427,7 +3543,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
       __Pyx_INCREF(__pyx_v_price);
       __Pyx_DECREF_SET(__pyx_v_p1_t, __pyx_v_price);
 
-      /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":135
+      /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":140
  *         cdef double idx2 = len(self._periods) - 1
  *         for price in self._periods[<Py_ssize_t>idx1:<Py_ssize_t>idx2]:
  *             if idx == 0:             # <<<<<<<<<<<<<<
@@ -3437,7 +3553,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
       goto __pyx_L5;
     }
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":139
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":144
  *                 p1_t = price
  *             else:
  *                 diff = float(p1) - float(p1_t)             # <<<<<<<<<<<<<<
@@ -3445,11 +3561,11 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
  *                 if float(diff) > 0.0: # if price is averaged up
  */
     /*else*/ {
-      __pyx_t_5 = __Pyx_PyObject_AsDouble(__pyx_v_p1); if (unlikely(__pyx_t_5 == ((double)((double)-1)) && PyErr_Occurred())) __PYX_ERR(0, 139, __pyx_L1_error)
-      __pyx_t_6 = __Pyx_PyObject_AsDouble(__pyx_v_p1_t); if (unlikely(__pyx_t_6 == ((double)((double)-1)) && PyErr_Occurred())) __PYX_ERR(0, 139, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_AsDouble(__pyx_v_p1); if (unlikely(__pyx_t_5 == ((double)((double)-1)) && PyErr_Occurred())) __PYX_ERR(0, 144, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_AsDouble(__pyx_v_p1_t); if (unlikely(__pyx_t_6 == ((double)((double)-1)) && PyErr_Occurred())) __PYX_ERR(0, 144, __pyx_L1_error)
       __pyx_v_diff = (__pyx_t_5 - __pyx_t_6);
 
-      /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":141
+      /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":146
  *                 diff = float(p1) - float(p1_t)
  *                 # self.notify(str(diff))
  *                 if float(diff) > 0.0: # if price is averaged up             # <<<<<<<<<<<<<<
@@ -3459,28 +3575,28 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
       __pyx_t_4 = ((__pyx_v_diff > 0.0) != 0);
       if (__pyx_t_4) {
 
-        /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":142
+        /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":147
  *                 # self.notify(str(diff))
  *                 if float(diff) > 0.0: # if price is averaged up
  *                     gains.append(float(diff))             # <<<<<<<<<<<<<<
  *                     losses.append(0.0)
  *                 elif float(diff) < 0.0: # price is averaged down
  */
-        __pyx_t_1 = PyFloat_FromDouble(__pyx_v_diff); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 142, __pyx_L1_error)
+        __pyx_t_1 = PyFloat_FromDouble(__pyx_v_diff); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_gains, __pyx_t_1); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 142, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_gains, __pyx_t_1); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 147, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":143
+        /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":148
  *                 if float(diff) > 0.0: # if price is averaged up
  *                     gains.append(float(diff))
  *                     losses.append(0.0)             # <<<<<<<<<<<<<<
  *                 elif float(diff) < 0.0: # price is averaged down
  *                     losses.append(abs(float(diff)))
  */
-        __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_losses, __pyx_float_0_0); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 143, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_losses, __pyx_float_0_0); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 148, __pyx_L1_error)
 
-        /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":141
+        /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":146
  *                 diff = float(p1) - float(p1_t)
  *                 # self.notify(str(diff))
  *                 if float(diff) > 0.0: # if price is averaged up             # <<<<<<<<<<<<<<
@@ -3490,7 +3606,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
         goto __pyx_L6;
       }
 
-      /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":144
+      /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":149
  *                     gains.append(float(diff))
  *                     losses.append(0.0)
  *                 elif float(diff) < 0.0: # price is averaged down             # <<<<<<<<<<<<<<
@@ -3500,28 +3616,28 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
       __pyx_t_4 = ((__pyx_v_diff < 0.0) != 0);
       if (__pyx_t_4) {
 
-        /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":145
+        /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":150
  *                     losses.append(0.0)
  *                 elif float(diff) < 0.0: # price is averaged down
  *                     losses.append(abs(float(diff)))             # <<<<<<<<<<<<<<
  *                     gains.append(0.0)
  *                 else: # price stays the same
  */
-        __pyx_t_1 = PyFloat_FromDouble(fabs(__pyx_v_diff)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
+        __pyx_t_1 = PyFloat_FromDouble(fabs(__pyx_v_diff)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_losses, __pyx_t_1); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 145, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_losses, __pyx_t_1); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 150, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":146
+        /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":151
  *                 elif float(diff) < 0.0: # price is averaged down
  *                     losses.append(abs(float(diff)))
  *                     gains.append(0.0)             # <<<<<<<<<<<<<<
  *                 else: # price stays the same
  *                     losses.append(0.0)
  */
-        __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_gains, __pyx_float_0_0); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 146, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_gains, __pyx_float_0_0); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 151, __pyx_L1_error)
 
-        /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":144
+        /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":149
  *                     gains.append(float(diff))
  *                     losses.append(0.0)
  *                 elif float(diff) < 0.0: # price is averaged down             # <<<<<<<<<<<<<<
@@ -3531,7 +3647,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
         goto __pyx_L6;
       }
 
-      /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":148
+      /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":153
  *                     gains.append(0.0)
  *                 else: # price stays the same
  *                     losses.append(0.0)             # <<<<<<<<<<<<<<
@@ -3539,20 +3655,20 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
  *                 p1_t = p1
  */
       /*else*/ {
-        __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_losses, __pyx_float_0_0); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 148, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_losses, __pyx_float_0_0); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 153, __pyx_L1_error)
 
-        /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":149
+        /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":154
  *                 else: # price stays the same
  *                     losses.append(0.0)
  *                     gains.append(0.0)             # <<<<<<<<<<<<<<
  *                 p1_t = p1
  *                 p1 = price
  */
-        __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_gains, __pyx_float_0_0); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 149, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_gains, __pyx_float_0_0); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 154, __pyx_L1_error)
       }
       __pyx_L6:;
 
-      /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":150
+      /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":155
  *                     losses.append(0.0)
  *                     gains.append(0.0)
  *                 p1_t = p1             # <<<<<<<<<<<<<<
@@ -3562,7 +3678,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
       __Pyx_INCREF(__pyx_v_p1);
       __Pyx_DECREF_SET(__pyx_v_p1_t, __pyx_v_p1);
 
-      /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":151
+      /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":156
  *                     gains.append(0.0)
  *                 p1_t = p1
  *                 p1 = price             # <<<<<<<<<<<<<<
@@ -3574,19 +3690,19 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
     }
     __pyx_L5:;
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":152
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":157
  *                 p1_t = p1
  *                 p1 = price
  *             idx += 1             # <<<<<<<<<<<<<<
  *         # record old data for smoothing operation
  *         if len(self._periods) > self._rsi_periods:
  */
-    __pyx_t_1 = __Pyx_PyInt_AddObjC(__pyx_v_idx, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 152, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyInt_AddObjC(__pyx_v_idx, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF_SET(__pyx_v_idx, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":134
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":139
  *         cdef double idx1 = len(self._periods) - (self._rsi_periods +1)
  *         cdef double idx2 = len(self._periods) - 1
  *         for price in self._periods[<Py_ssize_t>idx1:<Py_ssize_t>idx2]:             # <<<<<<<<<<<<<<
@@ -3596,7 +3712,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":154
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":159
  *             idx += 1
  *         # record old data for smoothing operation
  *         if len(self._periods) > self._rsi_periods:             # <<<<<<<<<<<<<<
@@ -3607,14 +3723,14 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   __Pyx_INCREF(__pyx_t_3);
   if (unlikely(__pyx_t_3 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 154, __pyx_L1_error)
+    __PYX_ERR(0, 159, __pyx_L1_error)
   }
-  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_3); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 154, __pyx_L1_error)
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_3); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_4 = ((__pyx_t_2 > __pyx_v_self->_rsi_periods) != 0);
   if (__pyx_t_4) {
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":155
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":160
  *         # record old data for smoothing operation
  *         if len(self._periods) > self._rsi_periods:
  *             self._prev_avg_gains = self.avg_gains             # <<<<<<<<<<<<<<
@@ -3624,7 +3740,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
     __pyx_t_6 = __pyx_v_self->avg_gains;
     __pyx_v_self->_prev_avg_gains = __pyx_t_6;
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":156
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":161
  *         if len(self._periods) > self._rsi_periods:
  *             self._prev_avg_gains = self.avg_gains
  *             self._prev_avg_losses = self.avg_losses             # <<<<<<<<<<<<<<
@@ -3634,7 +3750,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
     __pyx_t_6 = __pyx_v_self->avg_losses;
     __pyx_v_self->_prev_avg_losses = __pyx_t_6;
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":154
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":159
  *             idx += 1
  *         # record old data for smoothing operation
  *         if len(self._periods) > self._rsi_periods:             # <<<<<<<<<<<<<<
@@ -3643,74 +3759,74 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
  */
   }
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":158
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":163
  *             self._prev_avg_losses = self.avg_losses
  *         # take average for gains/lossess
  *         if len(gains) > 0 and len(losses) > 0:             # <<<<<<<<<<<<<<
  *             self.avg_gains = sum(gains) / float(len(gains))
  *             self.avg_losses = sum(losses) / float(len(losses))
  */
-  __pyx_t_2 = PyList_GET_SIZE(__pyx_v_gains); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_v_gains); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 163, __pyx_L1_error)
   __pyx_t_8 = ((__pyx_t_2 > 0) != 0);
   if (__pyx_t_8) {
   } else {
     __pyx_t_4 = __pyx_t_8;
     goto __pyx_L9_bool_binop_done;
   }
-  __pyx_t_2 = PyList_GET_SIZE(__pyx_v_losses); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_v_losses); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 163, __pyx_L1_error)
   __pyx_t_8 = ((__pyx_t_2 > 0) != 0);
   __pyx_t_4 = __pyx_t_8;
   __pyx_L9_bool_binop_done:;
   if (__pyx_t_4) {
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":159
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":164
  *         # take average for gains/lossess
  *         if len(gains) > 0 and len(losses) > 0:
  *             self.avg_gains = sum(gains) / float(len(gains))             # <<<<<<<<<<<<<<
  *             self.avg_losses = sum(losses) / float(len(losses))
  *             self.rsi = 100.0 - 100.0 / ( 1 + self.calculate_relative_strength() )
  */
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_sum, __pyx_v_gains); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 159, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_sum, __pyx_v_gains); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = PyList_GET_SIZE(__pyx_v_gains); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 159, __pyx_L1_error)
-    __pyx_t_1 = PyFloat_FromDouble(((double)__pyx_t_2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 159, __pyx_L1_error)
+    __pyx_t_2 = PyList_GET_SIZE(__pyx_v_gains); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 164, __pyx_L1_error)
+    __pyx_t_1 = PyFloat_FromDouble(((double)__pyx_t_2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_9 = __Pyx_PyNumber_Divide(__pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 159, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyNumber_Divide(__pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_t_9); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 159, __pyx_L1_error)
+    __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_t_9); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __pyx_v_self->avg_gains = __pyx_t_6;
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":160
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":165
  *         if len(gains) > 0 and len(losses) > 0:
  *             self.avg_gains = sum(gains) / float(len(gains))
  *             self.avg_losses = sum(losses) / float(len(losses))             # <<<<<<<<<<<<<<
  *             self.rsi = 100.0 - 100.0 / ( 1 + self.calculate_relative_strength() )
  * 
  */
-    __pyx_t_9 = __Pyx_PyObject_CallOneArg(__pyx_builtin_sum, __pyx_v_losses); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 160, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_CallOneArg(__pyx_builtin_sum, __pyx_v_losses); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 165, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_2 = PyList_GET_SIZE(__pyx_v_losses); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 160, __pyx_L1_error)
-    __pyx_t_1 = PyFloat_FromDouble(((double)__pyx_t_2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 160, __pyx_L1_error)
+    __pyx_t_2 = PyList_GET_SIZE(__pyx_v_losses); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 165, __pyx_L1_error)
+    __pyx_t_1 = PyFloat_FromDouble(((double)__pyx_t_2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 165, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyNumber_Divide(__pyx_t_9, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyNumber_Divide(__pyx_t_9, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 165, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 160, __pyx_L1_error)
+    __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 165, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_v_self->avg_losses = __pyx_t_6;
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":161
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":166
  *             self.avg_gains = sum(gains) / float(len(gains))
  *             self.avg_losses = sum(losses) / float(len(losses))
  *             self.rsi = 100.0 - 100.0 / ( 1 + self.calculate_relative_strength() )             # <<<<<<<<<<<<<<
  * 
  *     # Calculate initial relative_strength
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_calculate_relative_strength); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_calculate_relative_strength); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_9 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -3724,23 +3840,23 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
     }
     __pyx_t_3 = (__pyx_t_9) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_9) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
     __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 166, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyInt_AddCObj(__pyx_int_1, __pyx_t_3, 1, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyInt_AddCObj(__pyx_int_1, __pyx_t_3, 1, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyFloat_TrueDivideCObj(__pyx_float_100_0, __pyx_t_1, 100.0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyFloat_TrueDivideCObj(__pyx_float_100_0, __pyx_t_1, 100.0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 166, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyFloat_SubtractCObj(__pyx_float_100_0, __pyx_t_3, 100.0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFloat_SubtractCObj(__pyx_float_100_0, __pyx_t_3, 100.0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L1_error)
+    __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 166, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_self->rsi = __pyx_t_6;
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":158
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":163
  *             self._prev_avg_losses = self.avg_losses
  *         # take average for gains/lossess
  *         if len(gains) > 0 and len(losses) > 0:             # <<<<<<<<<<<<<<
@@ -3749,7 +3865,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
  */
   }
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":125
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":130
  *     # measures the magnitude of recent price changes to evaluate overbought or
  *     # oversold conditions in the price of a stock or other asset.
  *     def calculate_rsi_s1(self):             # <<<<<<<<<<<<<<
@@ -3778,7 +3894,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   return __pyx_r;
 }
 
-/* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":164
+/* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":169
  * 
  *     # Calculate initial relative_strength
  *     def calculate_relative_strength(self):             # <<<<<<<<<<<<<<
@@ -3806,7 +3922,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("calculate_relative_strength", 0);
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":165
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":170
  *     # Calculate initial relative_strength
  *     def calculate_relative_strength(self):
  *         if self.avg_losses != 0.0:             # <<<<<<<<<<<<<<
@@ -3816,7 +3932,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   __pyx_t_1 = ((__pyx_v_self->avg_losses != 0.0) != 0);
   if (__pyx_t_1) {
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":166
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":171
  *     def calculate_relative_strength(self):
  *         if self.avg_losses != 0.0:
  *             return self.avg_gains / self.avg_losses             # <<<<<<<<<<<<<<
@@ -3826,15 +3942,15 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
     __Pyx_XDECREF(__pyx_r);
     if (unlikely(__pyx_v_self->avg_losses == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-      __PYX_ERR(0, 166, __pyx_L1_error)
+      __PYX_ERR(0, 171, __pyx_L1_error)
     }
-    __pyx_t_2 = PyFloat_FromDouble((__pyx_v_self->avg_gains / __pyx_v_self->avg_losses)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 166, __pyx_L1_error)
+    __pyx_t_2 = PyFloat_FromDouble((__pyx_v_self->avg_gains / __pyx_v_self->avg_losses)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 171, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_r = __pyx_t_2;
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":165
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":170
  *     # Calculate initial relative_strength
  *     def calculate_relative_strength(self):
  *         if self.avg_losses != 0.0:             # <<<<<<<<<<<<<<
@@ -3843,7 +3959,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
  */
   }
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":167
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":172
  *         if self.avg_losses != 0.0:
  *             return self.avg_gains / self.avg_losses
  *         return 1.0             # <<<<<<<<<<<<<<
@@ -3855,7 +3971,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   __pyx_r = __pyx_float_1_0;
   goto __pyx_L0;
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":164
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":169
  * 
  *     # Calculate initial relative_strength
  *     def calculate_relative_strength(self):             # <<<<<<<<<<<<<<
@@ -3874,7 +3990,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   return __pyx_r;
 }
 
-/* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":170
+/* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":175
  * 
  *     # rsi step 2 smooths the results
  *     def calculate_rsi_s2(self):             # <<<<<<<<<<<<<<
@@ -3907,7 +4023,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   double __pyx_t_6;
   __Pyx_RefNannySetupContext("calculate_rsi_s2", 0);
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":171
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":176
  *     # rsi step 2 smooths the results
  *     def calculate_rsi_s2(self):
  *         denom = ((self._prev_avg_losses * 13) + self.avg_losses)             # <<<<<<<<<<<<<<
@@ -3916,7 +4032,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
  */
   __pyx_v_denom = ((__pyx_v_self->_prev_avg_losses * 13.0) + __pyx_v_self->avg_losses);
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":172
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":177
  *     def calculate_rsi_s2(self):
  *         denom = ((self._prev_avg_losses * 13) + self.avg_losses)
  *         if len(self._periods) > self._rsi_periods and denom != 0.0:             # <<<<<<<<<<<<<<
@@ -3926,9 +4042,9 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   __Pyx_INCREF(__pyx_t_2);
   if (unlikely(__pyx_t_2 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 172, __pyx_L1_error)
+    __PYX_ERR(0, 177, __pyx_L1_error)
   }
-  __pyx_t_3 = PyList_GET_SIZE(__pyx_t_2); if (unlikely(__pyx_t_3 == ((Py_ssize_t)-1))) __PYX_ERR(0, 172, __pyx_L1_error)
+  __pyx_t_3 = PyList_GET_SIZE(__pyx_t_2); if (unlikely(__pyx_t_3 == ((Py_ssize_t)-1))) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_4 = ((__pyx_t_3 > __pyx_v_self->_rsi_periods) != 0);
   if (__pyx_t_4) {
@@ -3941,7 +4057,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":173
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":178
  *         denom = ((self._prev_avg_losses * 13) + self.avg_losses)
  *         if len(self._periods) > self._rsi_periods and denom != 0.0:
  *             self.rsi = 100.0 - 100.0 / (1 + ((self._prev_avg_gains * 13) + self.avg_gains)/denom)             # <<<<<<<<<<<<<<
@@ -3949,16 +4065,16 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
     __pyx_t_5 = ((__pyx_v_self->_prev_avg_gains * 13.0) + __pyx_v_self->avg_gains);
     if (unlikely(__pyx_v_denom == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-      __PYX_ERR(0, 173, __pyx_L1_error)
+      __PYX_ERR(0, 178, __pyx_L1_error)
     }
     __pyx_t_6 = (1.0 + (__pyx_t_5 / __pyx_v_denom));
     if (unlikely(__pyx_t_6 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-      __PYX_ERR(0, 173, __pyx_L1_error)
+      __PYX_ERR(0, 178, __pyx_L1_error)
     }
     __pyx_v_self->rsi = (100.0 - (100.0 / __pyx_t_6));
 
-    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":172
+    /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":177
  *     def calculate_rsi_s2(self):
  *         denom = ((self._prev_avg_losses * 13) + self.avg_losses)
  *         if len(self._periods) > self._rsi_periods and denom != 0.0:             # <<<<<<<<<<<<<<
@@ -3966,7 +4082,7 @@ static PyObject *__pyx_pf_10hummingbot_8strategy_9rsi_trade_17trading_indicator_
  */
   }
 
-  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":170
+  /* "hummingbot/strategy/rsi_trade/trading_indicator.pyx":175
  * 
  *     # rsi step 2 smooths the results
  *     def calculate_rsi_s2(self):             # <<<<<<<<<<<<<<
@@ -5249,6 +5365,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_opts, __pyx_k_opts, sizeof(__pyx_k_opts), 0, 0, 1, 1},
   {&__pyx_n_u_period_interval, __pyx_k_period_interval, sizeof(__pyx_k_period_interval), 0, 1, 0, 1},
   {&__pyx_n_s_pickle, __pyx_k_pickle, sizeof(__pyx_k_pickle), 0, 0, 1, 1},
+  {&__pyx_n_s_pop, __pyx_k_pop, sizeof(__pyx_k_pop), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_PickleError, __pyx_k_pyx_PickleError, sizeof(__pyx_k_pyx_PickleError), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_checksum, __pyx_k_pyx_checksum, sizeof(__pyx_k_pyx_checksum), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_result, __pyx_k_pyx_result, sizeof(__pyx_k_pyx_result), 0, 0, 1, 1},
@@ -5362,6 +5479,7 @@ static int __Pyx_modinit_type_init_code(void) {
   __pyx_vtable_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator.c_store_tick_data = (PyObject *(*)(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *, PyObject *))__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_16TradingIndicator_c_store_tick_data;
   __pyx_vtable_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator.c_record_sign_flip_data = (PyObject *(*)(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *))__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_16TradingIndicator_c_record_sign_flip_data;
   __pyx_vtable_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator.buy = (PyObject *(*)(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *, float))__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_16TradingIndicator_buy;
+  __pyx_vtable_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator.sell = (PyObject *(*)(struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator *))__pyx_f_10hummingbot_8strategy_9rsi_trade_17trading_indicator_16TradingIndicator_sell;
   if (PyType_Ready(&__pyx_type_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIndicator.tp_print = 0;
@@ -6299,6 +6417,155 @@ static CYTHON_INLINE double __Pyx_mod_double(double a, double b) {
     r += ((r != 0) & ((r < 0) ^ (b < 0))) * b;
     return r;
 }
+
+/* PyObjectGetMethod */
+static int __Pyx_PyObject_GetMethod(PyObject *obj, PyObject *name, PyObject **method) {
+    PyObject *attr;
+#if CYTHON_UNPACK_METHODS && CYTHON_COMPILING_IN_CPYTHON && CYTHON_USE_PYTYPE_LOOKUP
+    PyTypeObject *tp = Py_TYPE(obj);
+    PyObject *descr;
+    descrgetfunc f = NULL;
+    PyObject **dictptr, *dict;
+    int meth_found = 0;
+    assert (*method == NULL);
+    if (unlikely(tp->tp_getattro != PyObject_GenericGetAttr)) {
+        attr = __Pyx_PyObject_GetAttrStr(obj, name);
+        goto try_unpack;
+    }
+    if (unlikely(tp->tp_dict == NULL) && unlikely(PyType_Ready(tp) < 0)) {
+        return 0;
+    }
+    descr = _PyType_Lookup(tp, name);
+    if (likely(descr != NULL)) {
+        Py_INCREF(descr);
+#if PY_MAJOR_VERSION >= 3
+        #ifdef __Pyx_CyFunction_USED
+        if (likely(PyFunction_Check(descr) || (Py_TYPE(descr) == &PyMethodDescr_Type) || __Pyx_CyFunction_Check(descr)))
+        #else
+        if (likely(PyFunction_Check(descr) || (Py_TYPE(descr) == &PyMethodDescr_Type)))
+        #endif
+#else
+        #ifdef __Pyx_CyFunction_USED
+        if (likely(PyFunction_Check(descr) || __Pyx_CyFunction_Check(descr)))
+        #else
+        if (likely(PyFunction_Check(descr)))
+        #endif
+#endif
+        {
+            meth_found = 1;
+        } else {
+            f = Py_TYPE(descr)->tp_descr_get;
+            if (f != NULL && PyDescr_IsData(descr)) {
+                attr = f(descr, obj, (PyObject *)Py_TYPE(obj));
+                Py_DECREF(descr);
+                goto try_unpack;
+            }
+        }
+    }
+    dictptr = _PyObject_GetDictPtr(obj);
+    if (dictptr != NULL && (dict = *dictptr) != NULL) {
+        Py_INCREF(dict);
+        attr = __Pyx_PyDict_GetItemStr(dict, name);
+        if (attr != NULL) {
+            Py_INCREF(attr);
+            Py_DECREF(dict);
+            Py_XDECREF(descr);
+            goto try_unpack;
+        }
+        Py_DECREF(dict);
+    }
+    if (meth_found) {
+        *method = descr;
+        return 1;
+    }
+    if (f != NULL) {
+        attr = f(descr, obj, (PyObject *)Py_TYPE(obj));
+        Py_DECREF(descr);
+        goto try_unpack;
+    }
+    if (descr != NULL) {
+        *method = descr;
+        return 0;
+    }
+    PyErr_Format(PyExc_AttributeError,
+#if PY_MAJOR_VERSION >= 3
+                 "'%.50s' object has no attribute '%U'",
+                 tp->tp_name, name);
+#else
+                 "'%.50s' object has no attribute '%.400s'",
+                 tp->tp_name, PyString_AS_STRING(name));
+#endif
+    return 0;
+#else
+    attr = __Pyx_PyObject_GetAttrStr(obj, name);
+    goto try_unpack;
+#endif
+try_unpack:
+#if CYTHON_UNPACK_METHODS
+    if (likely(attr) && PyMethod_Check(attr) && likely(PyMethod_GET_SELF(attr) == obj)) {
+        PyObject *function = PyMethod_GET_FUNCTION(attr);
+        Py_INCREF(function);
+        Py_DECREF(attr);
+        *method = function;
+        return 1;
+    }
+#endif
+    *method = attr;
+    return 0;
+}
+
+/* PyObjectCallMethod1 */
+static PyObject* __Pyx__PyObject_CallMethod1(PyObject* method, PyObject* arg) {
+    PyObject *result = __Pyx_PyObject_CallOneArg(method, arg);
+    Py_DECREF(method);
+    return result;
+}
+static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg) {
+    PyObject *method = NULL, *result;
+    int is_method = __Pyx_PyObject_GetMethod(obj, method_name, &method);
+    if (likely(is_method)) {
+        result = __Pyx_PyObject_Call2Args(method, obj, arg);
+        Py_DECREF(method);
+        return result;
+    }
+    if (unlikely(!method)) return NULL;
+    return __Pyx__PyObject_CallMethod1(method, arg);
+}
+
+/* pop_index */
+static PyObject* __Pyx__PyObject_PopNewIndex(PyObject* L, PyObject* py_ix) {
+    PyObject *r;
+    if (unlikely(!py_ix)) return NULL;
+    r = __Pyx__PyObject_PopIndex(L, py_ix);
+    Py_DECREF(py_ix);
+    return r;
+}
+static PyObject* __Pyx__PyObject_PopIndex(PyObject* L, PyObject* py_ix) {
+    return __Pyx_PyObject_CallMethod1(L, __pyx_n_s_pop, py_ix);
+}
+#if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
+static PyObject* __Pyx__PyList_PopIndex(PyObject* L, PyObject* py_ix, Py_ssize_t ix) {
+    Py_ssize_t size = PyList_GET_SIZE(L);
+    if (likely(size > (((PyListObject*)L)->allocated >> 1))) {
+        Py_ssize_t cix = ix;
+        if (cix < 0) {
+            cix += size;
+        }
+        if (likely(__Pyx_is_valid_index(cix, size))) {
+            PyObject* v = PyList_GET_ITEM(L, cix);
+            Py_SIZE(L) -= 1;
+            size -= 1;
+            memmove(&PyList_GET_ITEM(L, cix), &PyList_GET_ITEM(L, cix+1), (size_t)(size-cix)*sizeof(PyObject*));
+            return v;
+        }
+    }
+    if (py_ix == Py_None) {
+        return __Pyx__PyObject_PopNewIndex(L, PyInt_FromSsize_t(ix));
+    } else {
+        return __Pyx__PyObject_PopIndex(L, py_ix);
+    }
+}
+#endif
 
 /* SliceObject */
 static CYTHON_INLINE PyObject* __Pyx_PyObject_GetSlice(PyObject* obj,

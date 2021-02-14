@@ -33,3 +33,4 @@ cdef class TradingIndicator():
     cdef c_store_tick_data(self, object market_info)
     cdef c_record_sign_flip_data(self)
     cdef buy(self, float price)
+    cdef sell(self)

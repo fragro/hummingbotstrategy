@@ -2,6 +2,8 @@ from hummingbot.logger import HummingbotLogger
 import numpy as np
 import logging
 
+ds_logger = None
+
 # Store and calculate various trading indicators, RSI(14), MA10, MA-P, etc.
 cdef class TradingIndicator():
 
@@ -128,18 +130,31 @@ cdef class TradingIndicator():
     # measures the magnitude of recent price changes to evaluate overbought or 
     # oversold conditions in the price of a stock or other asset.
     def calculate_rsi_s1(self):
+        diff_x = len(self._ticks) - self._rsi_periods
+        if diff_x < 0.0:
+            diff_x = 0.0
+        indexes = list(filter(lambda x: (x % self._period_interval == 0), range(0, self._rsi_periods)))
         rs = 1
         idx = 0
         p1 = 0
         p1_t = 0
         gains = []
         losses = []
-        cdef double idx1 = len(self._periods) - (self._rsi_periods +1)
-        cdef double idx2 = len(self._periods) - 1
-        for price in self._periods[<Py_ssize_t>idx1:<Py_ssize_t>idx2]:
-            if idx == 0:
-                p1 = price
-                p1_t = price
+        # cdef double idx1 = len(self._periods) - (self._rsi_periods/self._period_interval +1)
+        # cdef double idx2 = len(self._periods) - 1
+        # eval_rsi = self._periods[<Py_ssize_t>idx1:<Py_ssize_t>idx2]
+        init = True
+        for idx in indexes:
+            idx_adj = int(idx + diff_x)
+            # Set first prices
+            # Break if the index is greater than history
+            self.logger().info(f"IDX: {idx_adj}")
+            if idx_adj > len(self._ticks):
+                break
+            if init:
+                p1 = self._ticks[idx_adj]
+                p1_t = self._ticks[idx_adj]
+                init = False
             else:
                 diff = float(p1) - float(p1_t)
                 # self.notify(str(diff))
@@ -153,8 +168,10 @@ cdef class TradingIndicator():
                     losses.append(0.0)
                     gains.append(0.0)
                 p1_t = p1
-                p1 = price
-            idx += 1
+                if idx_adj > len(self._ticks)-1:
+                    break
+                p1 = self._ticks[idx_adj]
+
         # record old data for smoothing operation
         if len(self._periods) > self._rsi_periods:
             self._prev_avg_gains = self.avg_gains 

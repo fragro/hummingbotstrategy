@@ -422,6 +422,8 @@ cdef class RsiTradeStrategy(StrategyBase):
             OrderBook order_book = market_info.order_book
             object price = market_info.get_price_for_volume(True, self.order_amount()).result_price
 
+        active_orders = self.market_info_to_active_orders.get(market_info, [])
+
         return quote_asset_balance >= self.order_amount() * price if self.is_buy else base_asset_balance >= self.order_amount()
 
     cdef c_process_market(self, object market_info):

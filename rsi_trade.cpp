@@ -1451,8 +1451,8 @@ struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIn
   double avg_losses;
   double _prev_avg_gains;
   double _prev_avg_losses;
-  double _period_interval;
-  double _rsi_periods;
+  int _period_interval;
+  int _rsi_periods;
   PyObject *_ticks;
   PyObject *_periods;
   PyObject *_buys;

@@ -9,8 +9,8 @@ cdef class TradingIndicator():
         double avg_losses
         double _prev_avg_gains
         double _prev_avg_losses
-        double _period_interval
-        double _rsi_periods
+        int _period_interval
+        int _rsi_periods
 
         list _ticks
         list _periods

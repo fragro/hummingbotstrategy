@@ -858,6 +858,8 @@ struct __pyx_obj_10hummingbot_8strategy_9rsi_trade_17trading_indicator_TradingIn
   PyObject *_periods;
   PyObject *_buys;
   double _avg_buy_price;
+  double _high_price;
+  double _low_price;
   double _last_mid_price;
   double _mid_price;
   double ma_p;

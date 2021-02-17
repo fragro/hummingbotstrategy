@@ -384,17 +384,17 @@ cdef class RsiTradeStrategy(StrategyBase):
                     self._orders_placed = True
             else:
                 quantized_price = market.c_quantize_order_price(market_info.trading_pair, self.order_price(market_info))
-                if self.c_validate_order(quantized_price):
-                    if self.is_buy:
-                        order_id = self.c_buy_with_specific_market(market_info,
-                                                                   amount=quantized_amount,
-                                                                   order_type=OrderType.LIMIT,
-                                                                   price=quantized_price)
-                        self.logger().info("Limit buy order has been placed")
-                        self._ti.buy(quantized_price)
-                        self._orders_placed = True
-
-                    else:
+                if self.is_buy:
+                    order_id = self.c_buy_with_specific_market(market_info,
+                                                               amount=quantized_amount,
+                                                               order_type=OrderType.LIMIT,
+                                                               price=quantized_price)
+                    self.logger().info("Limit buy order has been placed")
+                    self._ti.buy(quantized_price)
+                    self._orders_placed = True
+                    self._time_to_cancel[order_id] = self._current_timestamp + self._cancel_order_wait_time
+                else:
+                    if self.c_validate_order(quantized_price):
                         order_id = self.c_sell_with_specific_market(market_info,
                                                                     amount=quantized_amount,
                                                                     order_type=OrderType.LIMIT,
@@ -402,8 +402,10 @@ cdef class RsiTradeStrategy(StrategyBase):
                         self.logger().info("Limit sell order has been placed")
                         self._ti.sell()
                         self._orders_placed = True
+                        self._time_to_cancel[order_id] = self._current_timestamp + self._cancel_order_wait_time
+                    else:
+                        self.logger().info("Price below avg sell price. Hold.")
 
-                    self._time_to_cancel[order_id] = self._current_timestamp + self._cancel_order_wait_time
         else:
             self.logger().info(f"Not enough balance to run the strategy. Please check balances and try again.")
             self._ssm.c_reset()
@@ -452,7 +454,7 @@ cdef class RsiTradeStrategy(StrategyBase):
         self.run_strategy(market_info)
 
         # logs n cleanup    
-        self.logger().info(str(datetime.datetime.now()) + self.update_message())
+        # self.logger().info(str(datetime.datetime.now()) + self.update_message())
         log_to_file(SCRIPT_LOG_FILE, self.update_message())
 
     # TODO: We need to get the ask price to increase likelihood of a hit
@@ -462,7 +464,7 @@ cdef class RsiTradeStrategy(StrategyBase):
 
     # TODO: Make this go
     cdef order_amount(self):
-        return Decimal(1.0)
+        return Decimal(0.2)
 
     # Executes our strategy based on current state
     cdef run_strategy(self, object market_info):

@@ -42,6 +42,8 @@ cdef class TradingIndicator():
         # buy data
         self._buys = []
         self._avg_buy_price = 0.0
+        self._high_price = 0.0
+        self._low_price = 0.0
 
         # options for
         if opts["period_interval"] is not None:
@@ -86,6 +88,10 @@ cdef class TradingIndicator():
     cdef c_store_tick_data(self, object market_info):
         price = market_info.get_price_for_volume(True, 1).result_price
         self._mid_price = price
+        if price > self._high_price:
+            self._high_price = price
+        if price < self._low_price:
+            self._low_price = price
         self._ticks.append(float(price))
 
         if len(self._ticks) % self._period_interval == 0:
@@ -99,8 +105,9 @@ cdef class TradingIndicator():
 
     # add purchase to records and update the avg
     cdef sell(self):
-        self._buys.pop(0)
-        self._avg_buy_price = sum(self._buys) / len(self._buys)
+        if len(self._buys) > 0:
+            self._buys.pop(0)
+            self._avg_buy_price = sum(self._buys) / len(self._buys)
 
     # Moving Average of list t with window N
     def calculate_running_mean(self, t, n):
@@ -145,10 +152,9 @@ cdef class TradingIndicator():
         # eval_rsi = self._periods[<Py_ssize_t>idx1:<Py_ssize_t>idx2]
         init = True
         for idx in indexes:
-            idx_adj = int(idx + diff_x)
             # Set first prices
+            idx_adj = int(idx + diff_x)
             # Break if the index is greater than history
-            self.logger().info(f"IDX: {idx_adj}")
             if idx_adj > len(self._ticks):
                 break
             if init:

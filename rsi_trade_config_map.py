@@ -57,6 +57,16 @@ rsi_trade_config_map = {
                   prompt="Enter RSI you consider oversold >>> ",
                   type_str="float",
                   default=30.0),
+    "high_price":
+        ConfigVar(key="high_price",
+                  prompt="Enter the daily high price",
+                  type_str="float",
+                  default=1800.0),
+    "low_price":
+        ConfigVar(key="low_price",
+                  prompt="Enter the daily low price",
+                  type_str="float",
+                  default=1700.0),
     "mean_periods":         
         ConfigVar(key="mean_periods",
                   prompt="N val of MA(x, N) >>> ",
